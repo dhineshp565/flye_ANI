@@ -80,13 +80,13 @@ process combine_outputs {
     path(ani_list)
     output:
     path("all_assembly"),emit:all_assem
-    path("combined_ANI.csv")
+    path("combined_ANI.csv"),emit:combined_ANI
     script:
     """
     mkdir all_assembly
     for i in ${assembly_list};do cp \$i "all_assembly"/\$i;done
     cat ${ani_list} > combined_ANI.csv
-    sed -i "1i Querysequence Reference_sequence Average_Nucleotide_Identity Orthologous_Matches Total_sequence_fragments" "combined_ANI.csv"
+    sed -i "1i Query\ssequence\tReference\ssequence\tAverage\sNucleotide\sIdentity\tOrthologous\sMatches\tTotal\ssequence\sfragments" "combined_ANI.csv"
     """
 }
 process aniclustermap {
@@ -96,9 +96,29 @@ process aniclustermap {
     path (assembly_dir)
     output:
     path("ani_dir"),emit:clustermap
+    path("clustermap.png"),emit:png
     script:
     """
     ANIclustermap -i ${assembly_dir} -o ani_dir
+    cp ani_dir/*.png clustermap.png
+
+    """
+}
+process make_report {
+    label "medium"
+    publishDir "${params.outdir}/reports",mode:"Copy"
+    input:
+    path (ANI)
+    path(image)
+    path(rmdfile)
+    output:
+    path("report.html")
+    script:
+    """
+    cp ${rmdfile} rmdfile1.rmd
+    cp ${ANI} ani.csv
+    cp ${image} test.png
+    Rscript -e 'rmarkdown::render(input="rmdfile1.rmd",params=list(csvfile= "ani.csv",png="test.png"),output_file="report.html")'
     """
 }
 workflow {
@@ -116,4 +136,6 @@ workflow {
     fastANI(dragonflye.out.sample,dragonflye.out.assembly,params.reference)
     combine_outputs(dragonflye.out.assembly.collect(),fastANI.out.collect())
     aniclustermap(combine_outputs.out.all_assem)
+    rmd_file=file("${baseDir}/report.rmd")
+    make_report(combine_outputs.out.combined_ANI,aniclustermap.out.png,rmd_file)
 }
