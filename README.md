@@ -4,7 +4,7 @@ Pipeline for Whole genome Assembly using Dragonflye and ANI analysis using fastA
 Usage
 
 ```
-nextflow main.nf --input samplelist.csv --outdir test14 -profile docker --gsize 2.0M  --reference /data/Dhinesh/flye_ANI/PDS23214_flye.fasta
+nextflow run main.nf --input samplelist.csv --outdir test14 -profile docker --gsize 2.0M  --reference /data/Dhinesh/flye_ANI/PDS23214_flye.fasta
 ```
 ```
 options
