@@ -1,0 +1,23 @@
+---
+title: "ANI report"
+date: "`r Sys.Date()`"
+output: html_document
+params:
+    csvfile: ""
+    png: ""
+---
+## Average Nucleotide Identity results (ANI)
+
+FastANI was used for computation of whole-genome Average Nucleotide Identity (ANI).
+For more details about the pipeline please click <https://github.com/ParBLiSS/FastANI>
+
+```{r setup, echo=FALSE}
+result1 <- read.csv(params$csvfile,header = TRUE,sep='\t')
+knitr::kable(result1)
+```
+
+## ANIclustermap
+ANI between all-vs-all genomes are calculated by fastANI (or skani) and clustermap is drawn using seaborn.For more Details please click <https://github.com/moshi4/ANIclustermap>
+```{r,echo=FALSE,fig.cap="anicluster"}
+knitr::include_graphics(params$png)
+```
