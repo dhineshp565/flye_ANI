@@ -1,5 +1,5 @@
 # flye_ANI
-Pipeline for Whole genome Assembly using Dragonflye and ANI analysis using fastANI and ANIclustermap
+Pipeline for Whole genome Assembly using Dragonflye and ANI analysis using fastANI and ANIclustermap for Oxford nanopore reads. Outputs ANI report in html format.
 
 Usage
 
