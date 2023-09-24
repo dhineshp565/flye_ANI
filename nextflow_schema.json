@@ -5,6 +5,17 @@
     "description": "Pipeline for determining Whole genome assembly and Average Nucleotide Identity (ANI)",
     "type": "object",
     "definitions": {
+        "optional": {
+            "title": "optional",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "trim_barcodes": {
+                    "type": "string"
+                }
+            }
+        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -32,10 +43,6 @@
                     "fa_icon": "fas fa-folder-open"
                 },
                 "gsize": {
-                    "type": "string",
-                    "default": " "
-                },
-                "trim_barcodes": {
                     "type": "string"
                 },
                 "reference": {
@@ -47,6 +54,9 @@
         }
     },
     "allOf": [
+        {
+            "$ref": "#/definitions/optional"
+        },
         {
             "$ref": "#/definitions/input_output_options"
         }
