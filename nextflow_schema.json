@@ -5,17 +5,6 @@
     "description": "Pipeline for determining Whole genome assembly and Average Nucleotide Identity (ANI)",
     "type": "object",
     "definitions": {
-        "optional": {
-            "title": "optional",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "trim_barcodes": {
-                    "type": "string"
-                }
-            }
-        },
         "input_output_options": {
             "title": "Input/output options",
             "type": "object",
@@ -24,41 +13,56 @@
             "required": [
                 "input",
                 "outdir",
-                "gsize",
                 "reference"
             ],
             "properties": {
                 "input": {
                     "type": "string",
-                    "format": "file-path",
+                    "format": "directory-path",
                     "exists": true,
                     "mimetype": "text/csv",
-                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
+                    "description": "Path to fastq directory",
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
-                    "fa_icon": "fas fa-file-csv"
+                    "fa_icon": "far fa-folder-open"
                 },
                 "outdir": {
                     "type": "string",
                     "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
-                    "fa_icon": "fas fa-folder-open"
-                },
-                "gsize": {
-                    "type": "string"
+                    "fa_icon": "fas fa-folder-open",
+                    "format": "directory-path"
                 },
                 "reference": {
                     "type": "string",
                     "default": "sample.fasta",
                     "format": "file-path"
+                },
+                "gsize": {
+                    "type": "string",
+                    "default": " "
+                }
+            }
+        },
+        "optional": {
+            "title": "optional",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "trim_barcodes": {
+                    "type": "string",
+                    "enum": [
+                        "Yes"
+                    ]
                 }
             }
         }
     },
     "allOf": [
         {
-            "$ref": "#/definitions/optional"
+            "$ref": "#/definitions/input_output_options"
         },
         {
-            "$ref": "#/definitions/input_output_options"
+            "$ref": "#/definitions/optional"
         }
     ]
 }

@@ -1,6 +1,23 @@
 #!/usr/bin/env nextflow
 nextflow.enable.dsl=2
 
+process make_csv {
+	publishDir "${params.outdir}"
+	input:
+	path(fastq_input)
+	output:
+	path("samplelist.csv")
+	
+	script:
+	"""
+	ls -1 ${fastq_input} > sample.csv
+	realpath ${fastq_input}/* > paths.csv
+	paste sample.csv paths.csv > samplelist.csv
+	sed -i 's/	/,/g' samplelist.csv
+	sed -i '1i SampleName,SamplePath' samplelist.csv
+	"""
+
+}
 
 //merge fastq files for each SampleName and create a merged file for each SampleNames
 process merge_fastq {
@@ -124,10 +141,8 @@ process make_report {
 workflow {
     data=Channel
 	.fromPath(params.input)
-	.splitCsv(header:true)
-    .map { row-> tuple(row.SampleName,row.SamplePath) }
-     merge_fastq(data)
-    if (params.trim_barcodes){
+    merge_fastq(make_csv(data).splitCsv(header:true).map { row-> tuple(row.SampleName,row.SamplePath)})
+	if (params.trim_barcodes){
 		porechop(merge_fastq.out)
 		dragonflye(porechop.out,params.gsize) 
 	} else {
